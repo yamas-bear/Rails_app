@@ -1,0 +1,31 @@
+version: '3'
+
+volumes: 
+    db-data:
+
+services: 
+    web: #サービス名
+        build: .
+        ports: 
+            - '3000:3000'
+        volumes: #マウントするディレクトリを書く（相対パス）host:container
+            - '.:/product-register'
+        environment:
+            - 'POSTGRES_USER=postgres'
+            #- 'POSTGRES_PASSWORD=postgres'
+            - 'POSTGRES_HOST_AUTH_METHOD=trust'
+        #ttyとstdin_openは-itの役割
+        tty: true
+        stdin_open: true
+        depends_on: 
+            - db 
+        links: 
+            - db 
+    
+    db:
+        image: postgres
+        volumes: 
+            - 'db-data:/var/lib/postgresql/data'
+
+
+
